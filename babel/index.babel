@@ -1,0 +1,198 @@
+var app = new Vue({
+    el: "#root",
+    data: {
+        startDisabled:false,
+        pattern: [],
+        gameLength:10,
+        userConsole: "Hit start, get to round 10 to win!",
+        counter: 0,
+        playerTurn: false,
+        strict: false,
+        round: 0,
+        isActive: {
+            1: false,
+            2: false,
+            3: false,
+            4: false
+        },
+        sounds:{
+            dennis_weapon: new Audio("http://saltknife.com/fcc/dennis_weapon.mp3"),
+            3: new Audio("http://saltknife.com/fcc/dennis_idiots.mp3"),
+            dennis_wrong: new Audio("http://saltknife.com/fcc/dennis_wrong.mp3"),
+            frank_done: new Audio("http://saltknife.com/fcc/frank_done.mp3"),
+            frank_mash: new Audio("http://saltknife.com/fcc/frank_mash.mp3"),
+            frank_bitch: new Audio("http://saltknife.com/fcc/frank_bitch.mp3"),
+            4: new Audio("http://saltknife.com/fcc/dee_bird.mp3"),
+            1: new Audio("http://saltknife.com/fcc/charlie_milksteak.mp3"),
+            2: new Audio("http://saltknife.com/fcc/mac_mass.mp3"),
+            mac_diabettus: new Audio("http://saltknife.com/fcc/mac_diabettus.mp3")
+        }
+    },
+    methods: {
+        squareTrigger(square) {
+            
+            this.sounds[square].cloneNode(true).play();
+            
+            if (this.playerTurn) {
+                if (square == this.pattern[this.counter]) {
+                    console.log("User hit the right square");
+                    this.userConsole = "So far, so good.";
+                    this.counter += 1;
+
+                    if (this.pattern.length == this.counter) {
+                        if(this.pattern.length >= this.gameLength){
+                            this.playerTurn = false;
+                            this.gameWon();
+                        } else {
+                            console.log("Nice! You survived another round.");
+                            this.userConsole = "Nice! You survived another round.";
+                            this.playerTurn = false;
+
+                            setTimeout(function() {
+                                this.gameLoop();  
+                            }.bind(this), 1000);
+                        }
+                      
+                    }
+                } else {
+                    if (this.strict) {
+                        this.sounds.frank_mash.play();
+                        console.log(
+                            "You blew it on strict mode, starting from scratch."
+                        );
+                        this.userConsole =
+                            "You blew it on strict mode, starting from scratch.";
+                        setTimeout(function() {
+                            this.newGame();
+                        }.bind(this), 2500);
+                    } else {
+                        this.playerTurn = false;
+                        console.log("Wrong Square Bozo, it goes like this");
+                        this.userConsole = "No dude, it goes like this:";
+                        
+                        // Math.ceil(Math.random() * 2) == 1 ? this.sounds.dennis_wrong.play() : this.sounds.frank_bitch.play();
+                        this.sounds.dennis_wrong.play();
+                        setTimeout(function() {
+                            this.flashCurrentPattern();
+                            this.counter = 0;
+                        }.bind(this), 2000);
+                    }
+                }
+            } else {
+                console.log("Be patient, Bozo, not your turn yet.");
+            }
+        },
+        toggleStrict() {
+            this.strict = !this.strict;
+            console.log("Strict is set to " + this.strict);
+                this.pattern = [];
+                this.playerTurn = false;
+                this.round = 0;
+            this.userConsole = "Strict Mode toggled, game is reset";
+        },
+
+        flashSquare(square) {
+            // turn ON square's color
+            setTimeout(
+                function() {
+                    this.isActive[square] = true;
+                }.bind(this),
+                100
+            );
+            
+
+
+
+            this.sounds[square].cloneNode(true).play();
+            
+            
+            // turn OFF square's color
+            setTimeout(
+                function() {
+                    this.isActive[square] = false;
+                }.bind(this),
+                800
+            );
+        },
+
+        newNum() {
+            return Math.ceil(Math.random() * 4);
+        },
+
+        newGame() {
+            this.userConsole = "New game starting, everybody get a weapon.";
+            this.sounds.dennis_weapon.play();
+            this.startDisabled = true;
+            setTimeout(function() {
+                this.pattern = [];
+                this.playerTurn = false;
+                this.round = 0;
+                this.gameLoop();
+            }.bind(this), 2500);
+        },
+        flashCurrentPattern() {
+            this.playerTurn = false;
+            var i = 0;
+            var moves = setInterval(
+                function() {
+                    //flash the pattern so far to the Player
+                    this.flashSquare(this.pattern[i]);
+                    console.log("Flashing square " + this.pattern[i]);
+
+                    i++;
+
+                    if (i >= this.pattern.length) {
+                        clearInterval(moves);
+                        this.playerTurn = true;
+                    }
+                }.bind(this),
+                1800
+            );
+        },
+        gameWon(){
+            console.log("You won the game! ...  ..   ");
+            this.userConsole = "You won!!";
+            this.sounds.frank_done.play();
+            setTimeout(function() {
+                this.playerTurn = false;
+            }.bind(this), 5000);
+        },
+        gameLoop() {
+            this.startDisabled = false;
+            if (this.playerTurn) {
+                console.log("Player's turn... waiting... ");
+            } else {
+                this.pattern.push(this.newNum());
+                console.log("Pattern is " + this.pattern);
+
+                // increment round
+                this.round += 1;
+                console.log("Round is " + this.round);
+                this.userConsole = `Round ${this.round}. Pay close attention`;
+                
+                var i = 0;
+                var moves = setInterval(
+                    function() {
+                        //flash the pattern so far to the Player
+                        this.flashSquare(this.pattern[i]);
+                        console.log("Flashing square " + this.pattern[i]);
+
+                        i++;
+
+                        // clearInterval(moves);
+
+                        if (i >= this.pattern.length) {
+                            clearInterval(moves);
+                            console.log("Stopping interval");
+
+                            this.counter = 0;
+                            this.playerTurn = true;
+                            console.log("Handing turn to the player");
+                        }
+                    }.bind(this),
+                    800
+                );
+            }
+        }
+    }
+});

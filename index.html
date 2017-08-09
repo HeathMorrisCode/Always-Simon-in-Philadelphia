@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>It's Always Simon in Philadelphia VueJS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/css/tether.css'>
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css'>
+
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+<body>
+  <div id="root" style="margin-top:50px; min-width: 540px;" class="container game-border">
+    <div class="row justify-content-center">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">It's Always Simon in Philadelphia</h3>
+            </div>    
+            <div class="card-block">  
+<!--                 <div class="row"> -->
+                    <button v-bind:disabled="startDisabled" @click="newGame()" type="button" class="btn btn-success">Start</button>
+                    <button :class="{ 'btn-danger': strict, 'btn-outline-danger': !strict, }" @click="toggleStrict()" type="button" class="btn float-right">{{ strict ? 'Strict: ON' : 'Strict: OFF' }}</button>
+<!--                 </div> -->
+
+<!--                 <div class="row"> -->
+                    <div class="alert alert-info" role="alert">{{ userConsole }}</div>
+<!--                 </div> -->
+
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+
+
+        <div @click="squareTrigger(1)" id="charlie" class="col-xs-6 image-holder blue squareOverlay">
+            <img src="https://res.cloudinary.com/dq6zqrm35/image/upload/v1499703586/Square-Charlie-BW_dophlw.jpg" class="img-fluid" /><span style="background:blue;" :class="{ activeSquare: isActive[1] }"></span>
+        </div>
+
+
+        <div @click="squareTrigger(2)" id="mac" class="col-xs-6 image-holder red squareOverlay">
+            <img src="https://res.cloudinary.com/dq6zqrm35/image/upload/v1499703586/Square-Mac-BW_ihklaq.jpg" class="img-fluid" /><span style="background:red;" :class="{ activeSquare: isActive[2] }"></span>
+        </div>
+
+    </div>
+
+    <div class="row justify-content-center">
+
+        <div @click="squareTrigger(3)" id="dennis" class="col-xs-6 image-holder green squareOverlay">
+            <img src="https://res.cloudinary.com/dq6zqrm35/image/upload/v1499703587/Square-Dennis-BW_vjzvd9.jpg" class="img-fluid" /><span style="background:green;" :class="{ activeSquare: isActive[3] }"></span>
+        </div>
+        <div @click="squareTrigger(4)" id="dee" class="col-xs-6 image-holder yellow squareOverlay">
+            <img src="https://res.cloudinary.com/dq6zqrm35/image/upload/v1499703586/Square-Dee-BW_ocyu2p.jpg" class="img-fluid" /><span style="background:yellow;" :class="{ activeSquare: isActive[4] }"></span>
+        </div>
+
+    </div>
+
+    <div class="row justify-content-center">
+
+    </div>
+</div>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.js'></script>
+
+    <script src="js/index.js"></script>
+
+</body>
+</html>
